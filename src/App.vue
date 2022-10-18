@@ -8,24 +8,23 @@ let merit = reactive({
 	scale: 1,
 });
 
-let throttle = function (func: { apply: (arg0: null, arg1: any[]) => void; }, wait: number) {
-	var lastTime = 0;
-	return function (...args: any[]) {
-		let now = Date.now();
-		let cd = now - lastTime < wait;
-		if (cd) return;
-		lastTime = Date.now();
-		func.apply(null, args);
-	}
+function debounce(fn: any) {
+	let timeout: any = null;
+	return function () {
+		clearTimeout(timeout);
+		timeout = setTimeout(() => {
+			fn.apply(debounce, arguments);
+		}, 45);
+	};
 }
 
-let todogood = throttle((n?: number) => {
+let todogood = debounce((n?: number) => {
 	merit.scale = 1.234;
 	merit.current = n ? n : Math.round((Math.random() * 0) + 1);
 	merit.data += merit.current;
 	merit.list.push({
-		x: Math.round(Math.random() * window.innerWidth),
-		y: Math.round(Math.random() * window.innerHeight),
+		x: Math.round(Math.random() * window.innerWidth) - Math.round(Math.random() * window.innerWidth) * 0.3,
+		y: Math.round(Math.random() * window.innerHeight) - Math.round(Math.random() * window.innerHeight) * 0.3,
 		merit: merit.current,
 	});
 	setTimeout(() => {
@@ -36,7 +35,7 @@ let todogood = throttle((n?: number) => {
 	setTimeout(() => {
 		merit.scale = 1;
 	}, 40);
-}, 80);
+});
 </script>
 
 <template>
@@ -135,8 +134,9 @@ img.wooden_fish {
 
 .mymerits {
 	position: fixed;
-	top: 0;
-	left: 10px;
-	font-size: 24px;
+	bottom: 0;
+	right: 20px;
+	font-weight: 100;
+	font-size: 30px;
 }
 </style>
