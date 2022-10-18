@@ -19,7 +19,7 @@ let todogood = (n?: number) => {
 		merit.list.shift();
 	}, Math.round(Math.random() * 10000) + 1000);
 
-	let a = new Audio("/src/assets/do.mp3");
+	let a = new Audio('do.mp3');
 	a.play();
 }
 </script>
