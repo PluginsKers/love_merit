@@ -1,29 +1,13 @@
-# Vite
+# 救人一命，胜造七级浮屠。
 
-This directory is a brief example of a Vite/Vue.js site that can be deployed to Vercel with zero configuration.
+# 行善积德是兴趣。
 
-While this project uses Vue.js, Vite supports many popular JS frameworks. [See all the supported frameworks](https://vitejs.dev/guide/#scaffolding-your-first-vite-project).
+# 但去行善，莫问前程。
 
-## Deploy Your Own
+# 不重形式，重在真心。
 
-Deploy your own Vite project with Vercel.
+# 凡人心即神，神即心，若欺心，便欺神。
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel/vercel/tree/main/examples/vite&template=vite)
+# 无有结果，发心难支。
 
-_Live Example: https://vite-vue-template.vercel.app_
-
-### How We Created This Example
-
-To get started with Vue.js deployed with Vercel, you can use Vite (https://vitejs.dev/guide/#scaffolding-your-first-vite-project) to initialize the project:
-
-```shell
-$ yarn create @vitejs/app
-```
-
-### Deploying From Your Terminal
-
-You can deploy your new Vite project with a single command from your terminal using [Vercel CLI](https://vercel.com/download):
-
-```shell
-$ vercel
-```
+# 阿弥陀佛。
