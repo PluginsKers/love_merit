@@ -5,13 +5,26 @@ let merit = reactive({
 	data: localStorage.getItem("merit") ? Number(localStorage.getItem("merit")) : 0,
 	current: 1,
 	list: new Array(),
+	scale: 1,
 });
 
-let todogood = (n?: number) => {
+let throttle = function (func: { apply: (arg0: null, arg1: any[]) => void; }, wait: number) {
+	var lastTime = 0;
+	return function (...args: any[]) {
+		let now = Date.now();
+		let cd = now - lastTime < wait;
+		if (cd) return;
+		lastTime = Date.now();
+		func.apply(null, args);
+	}
+}
+
+let todogood = throttle((n?: number) => {
+	merit.scale = 1.234;
 	merit.current = n ? n : Math.round((Math.random() * 0) + 1);
 	merit.data += merit.current;
 	merit.list.push({
-		x: Math.round(Math.random() * window.innerWidth * 0.8) + 10,
+		x: Math.round(Math.random() * window.innerWidth),
 		y: Math.round(Math.random() * window.innerHeight),
 		merit: merit.current,
 	});
@@ -19,20 +32,23 @@ let todogood = (n?: number) => {
 		merit.list.shift();
 	}, Math.round(Math.random() * 10000) + 1000);
 
-	let a = new Audio('do.mp3');
-	a.play();
-}
+	new Audio('merit.mp3').play();
+	setTimeout(() => {
+		merit.scale = 1;
+	}, 40);
+}, 80);
 </script>
 
 <template>
 	<div class="overlay" @click="todogood()"></div>
-	<img src="./assets/wooden_fish.svg" class="wooden_fish" alt="merit++" @click="" />
+	<img src="./assets/wooden_fish.svg" class="wooden_fish" alt="merit++" @click=""
+		:style="{transform: `scale(`+ merit.scale + `)`}" />
 	<ul class="merits">
 		<li v-for="v of merit.list" :style="{top: v.y + 'px', left: v.x + 'px'}">
 			功德+{{v.merit}}
 		</li>
 	</ul>
-	<h1 class="mymerits">我的功德：{{merit.data}}</h1>
+	<h1 class="mymerits">{{merit.data}}</h1>
 </template>
 
 <style scoped>
@@ -87,10 +103,6 @@ img.wooden_fish {
 	z-index: 1;
 }
 
-.overlay:active+img.wooden_fish {
-	transform: scale(1.1);
-}
-
 .overlay,
 .merits {
 	position: absolute;
@@ -110,10 +122,11 @@ img.wooden_fish {
 .merits li {
 	position: absolute;
 	font-family: HarmonyOS_Regular;
-	font-size: 32px;
+	font-weight: 800;
+	font-size: 56px;
 	line-height: 64px;
 	color: var(--text-p1);
-	opacity: 0.7;
+	opacity: 0.3;
 }
 
 * {
