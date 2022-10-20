@@ -22,10 +22,13 @@
   --gap-p: 0.75rem;
 }
 
-html,
-body,
 #app {
-  overflow: hidden !important;
+  overflow: visible;
+}
+
+html,
+body {
+  overflow: hidden;
 }
 
 a {

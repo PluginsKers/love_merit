@@ -30,8 +30,9 @@ function throttle(func: Function, time: number, immediate = false) {
 			}
 		}
 	}
-
 }
+
+const subs = ['善有善报', '恶有恶报', '七级浮屠', '苦海无边', '回头是岸', '立地成佛', '道高一尺', '魔高一丈', '百尺竿头', '更进一步', '顽石点头', '磨砖作镜', '衣钵相传', '戒律清规', '大千世界', '拈花微笑', '老僧人定'];
 
 function hit(probability: number, accuracy = 1000) {
 	let _a = Array.from(Array(accuracy), () => 0);
@@ -56,40 +57,42 @@ function hit(probability: number, accuracy = 1000) {
 
 let player = new Audio('merit.mp3');
 
-let todogood = throttle((n?: number) => {
+const togoodevil = throttle((n?: number) => {
 	let hited: boolean = hit(8);
-	merit.scale = hited ? 2.123 : 1.234;
 	merit.current = n ? n : (hited ? Math.round(Math.random() * 2) + 1 : 1);
+	merit.scale = hited ? merit.current + 1 : 1.345;
 	merit.data += merit.current;
 	merit.list.push({
-		left: Math.round(Math.random() * window.innerWidth) - Math.round(Math.random() * window.innerWidth) * 0.3,
-		top: Math.round(Math.random() * window.innerHeight) - Math.round(Math.random() * window.innerHeight) * 0.3,
+		left: Math.round(Math.random() * window.innerWidth) - Math.round(Math.random() * window.innerWidth) * (hited ? 0 : 0.3),
+		top: Math.round(Math.random() * window.innerHeight) - Math.round(Math.random() * window.innerHeight) * (hited ? 0 : 0.3),
 		size: Math.round(Math.random() * 24) + (hited ? 32 : 24),
 		color: hited ? '#fbff08' : 'rgba(' + Math.floor(Math.random() * 255) + ',' + Math.floor(Math.random() * 255) + ',' + Math.floor(Math.random() * 255) + ',0.8)',
-		shadow: hited ? '0 8px 4px black' : 'none',
+		weight: hited ? 800 : 300,
+		shadow: hited ? '0 5px 4px black' : 'none',
 		merit: merit.current,
+		perfix: hited ? subs[Math.round(Math.random() * subs.length)] : '功德'
 	});
 	setTimeout(() => {
 		merit.list.shift();
 	}, Math.round(Math.random() * 100000) + 5000);
 
 	if (player.played) player = new Audio('merit.mp3');
-	player.play();
-	player.remove();
+	if (player.paused) player.play();
 	setTimeout(() => {
 		merit.scale = 1;
-	}, 40);
+		player.remove();
+	}, 60);
 }, 300);
 </script>
 
 <template>
-	<div class="touch-overlay" @click="todogood()"></div>
+	<div class="touch-overlay" @click="togoodevil()"></div>
 	<img src="./assets/wooden_fish.svg" class="wooden_fish" alt="merit++" @click=""
 		:style="{transform: `scale(`+ merit.scale + `)`}" />
 	<ul class="merits">
 		<li v-for="v,index of merit.list"
-			:style="{top: v.top + 'px', left: v.left + 'px', fontSize: v.size + 'px', color: v.color, textShadow: v.shadow}">
-			功德+{{v.merit}}
+			:style="{top: v.top + 'px', left: v.left + 'px', fontSize: v.size + 'px', color: v.color, textShadow: v.shadow, fontWeight: v.weight}">
+			{{ v.perfix }}+{{v.merit}}
 		</li>
 	</ul>
 	<h1 class="mymerits">{{merit.data}}</h1>
@@ -129,7 +132,6 @@ img.wooden_fish {
 	position: absolute;
 	white-space: nowrap;
 	font-family: HarmonyOS_Regular;
-	font-weight: 500;
 	font-size: 56px;
 	line-height: 64px;
 	color: var(--text-p1);
