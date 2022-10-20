@@ -8,42 +8,87 @@ let merit = reactive({
 	scale: 1,
 });
 
-function debounce(fn: any) {
-	let timeout: any = null;
-	return function () {
-		clearTimeout(timeout);
-		timeout = setTimeout(() => {
-			fn.apply(debounce, arguments);
-		}, 45);
-	};
+function throttle(func: Function, time: number, immediate = false) {
+	if (immediate) {
+		let prevTime = 0;
+		return (...args: any) => {
+			let nowTime = Date.now();
+			if (nowTime - prevTime >= time) {
+				func.apply(throttle, args)
+				prevTime = nowTime
+			}
+		}
+	} else {
+		let timer: number | null = null;
+		return (...args: any) => {
+			if (!timer) {
+				func.apply(throttle, args)
+				timer = window.setTimeout(() => {
+					if (timer) clearInterval(timer)
+					timer = null
+				}, time);
+			}
+		}
+	}
+
 }
 
-let todogood = debounce((n?: number) => {
-	merit.scale = 1.234;
-	merit.current = n ? n : Math.round((Math.random() * 0) + 1);
+function hit(probability: number, accuracy = 1000) {
+	let _a = Array.from(Array(accuracy), () => 0);
+	let excludes = [];
+	for (let i = 0; i < probability * 0.01 * accuracy; i++) {
+		_a[i] = 1;
+	}
+	function shuffle(arr: number[]) {
+		let result = [],
+			random;
+		while (arr.length > 0) {
+			random = Math.floor(Math.random() * arr.length);
+			result.push(arr[random])
+			arr.splice(random, 1)
+		}
+		return result;
+	}
+	let _r = shuffle(_a);
+	if (_r[Math.round(Math.random() * _a.length)] === 1) return true;
+	return false;
+}
+
+let player = new Audio('merit.mp3');
+
+let todogood = throttle((n?: number) => {
+	let hited: boolean = hit(8);
+	merit.scale = hited ? 2.123 : 1.234;
+	merit.current = n ? n : (hited ? Math.round(Math.random() * 2) + 1 : 1);
 	merit.data += merit.current;
 	merit.list.push({
-		x: Math.round(Math.random() * window.innerWidth) - Math.round(Math.random() * window.innerWidth) * 0.3,
-		y: Math.round(Math.random() * window.innerHeight) - Math.round(Math.random() * window.innerHeight) * 0.3,
+		left: Math.round(Math.random() * window.innerWidth) - Math.round(Math.random() * window.innerWidth) * 0.3,
+		top: Math.round(Math.random() * window.innerHeight) - Math.round(Math.random() * window.innerHeight) * 0.3,
+		size: Math.round(Math.random() * 24) + (hited ? 32 : 24),
+		color: hited ? '#fbff08' : 'rgba(' + Math.floor(Math.random() * 255) + ',' + Math.floor(Math.random() * 255) + ',' + Math.floor(Math.random() * 255) + ',0.8)',
+		shadow: hited ? '0 8px 4px black' : 'none',
 		merit: merit.current,
 	});
 	setTimeout(() => {
 		merit.list.shift();
-	}, Math.round(Math.random() * 10000) + 1000);
+	}, Math.round(Math.random() * 100000) + 5000);
 
-	new Audio('merit.mp3').play();
+	if (player.played) player = new Audio('merit.mp3');
+	player.play();
+	player.remove();
 	setTimeout(() => {
 		merit.scale = 1;
 	}, 40);
-});
+}, 300);
 </script>
 
 <template>
-	<div class="overlay" @click="todogood()"></div>
+	<div class="touch-overlay" @click="todogood()"></div>
 	<img src="./assets/wooden_fish.svg" class="wooden_fish" alt="merit++" @click=""
 		:style="{transform: `scale(`+ merit.scale + `)`}" />
 	<ul class="merits">
-		<li v-for="v of merit.list" :style="{top: v.y + 'px', left: v.x + 'px'}">
+		<li v-for="v,index of merit.list"
+			:style="{top: v.top + 'px', left: v.left + 'px', fontSize: v.size + 'px', color: v.color, textShadow: v.shadow}">
 			功德+{{v.merit}}
 		</li>
 	</ul>
@@ -51,62 +96,24 @@ let todogood = debounce((n?: number) => {
 </template>
 
 <style scoped>
-:root {
-	--site-bg: #f8f8f8;
-	--block: #f2f2f2;
-	--block-border: #e5e5e5;
-	--block-hover: #ededed;
-	--text-p0: #000;
-	--text-p1: #333;
-	--text-p2: #5a5a5a;
-	--text-p3: #818181;
-	--text-p4: #b3b3b3;
-	--text-meta: #d0d0d0;
-	--text-code: #111;
-	--card: #fff;
-	--theme-highlight: #03c7fa;
-	--theme-bg: #e8fafe;
-	--swiper-theme-color: #1bcdfc !important;
-	--blur-px: 12px;
-	--blur-bg: rgba(255, 255, 255, 0.5);
-	--width-left: 256px;
-	--width-main: 720px;
-	--gap-l: 16px;
-	--gap-p: 0.75rem;
-}
-
-body {
-	background: var(--site-bg);
-	margin: 0;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	text-rendering: optimizelegibility;
-	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-}
-
-html {
-	font-family: HarmonyOS_Regular, system-ui, "Microsoft Yahei", "Segoe UI", -apple-system, Roboto, Ubuntu, "Helvetica Neue", Arial, "WenQuanYi Micro Hei", sans-serif;
-	font-size: 16px;
-	-webkit-text-size-adjust: 100%;
-	-ms-text-size-adjust: 100%;
-	scroll-behavior: smooth;
-}
-
-.overlay {
+.touch-overlay {
 	z-index: 99;
 }
 
 img.wooden_fish {
 	position: relative;
-	cursor: pointer;
+	pointer-events: none;
+	transition: all .1s;
 	z-index: 1;
 }
 
-.overlay,
+.touch-overlay,
 .merits {
 	position: absolute;
-	left: 0;
 	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
 	width: 100%;
 	height: 100%;
 }
@@ -120,8 +127,9 @@ img.wooden_fish {
 
 .merits li {
 	position: absolute;
+	white-space: nowrap;
 	font-family: HarmonyOS_Regular;
-	font-weight: 800;
+	font-weight: 500;
 	font-size: 56px;
 	line-height: 64px;
 	color: var(--text-p1);
@@ -129,7 +137,7 @@ img.wooden_fish {
 }
 
 * {
-	overflow: hidden;
+	overflow: hidden !important;
 }
 
 .mymerits {
