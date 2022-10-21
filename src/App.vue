@@ -7,7 +7,7 @@ let merit = reactive({
 	list: new Array(),
 	scale: 1,
 	raw: "",
-}), _m = new Array();
+});
 
 function debounce(func: Function, time: number, immediate = false) {
 	let timer: number | null = null;
@@ -75,9 +75,12 @@ function hit(probability: number, accuracy = 1000) {
 
 let players = new Array(new Audio('merit.mp3'));
 
+function shift() {
+	debounce(merit.list.shift(), 120);
+}
+
 const togoodevil = throttle(debounce((n?: number) => {
 	let hited: boolean = hit(3);
-	_m = JSON.parse(JSON.stringify(merit.list));
 	merit.current = n ? n : (hited ? Math.round(Math.random() * 2) + 2 : 1);
 	merit.scale = hited ? merit.current * 0.5 + 1 : 1.345;
 	merit.data += merit.current;
@@ -94,15 +97,15 @@ const togoodevil = throttle(debounce((n?: number) => {
 
 	_d.left -= _d.size;
 
-	if (_m.length > 26) {
-		_m.shift();
+	if (merit.list.length > 26) {
+		shift();
 	}
 
 	setTimeout(() => {
-		debounce(merit.list.shift(), 120);
+		shift();
 	}, Math.round(Math.random() * 5000) + 5000);
 
-	_m.push(_d);
+	merit.list.push(_d);
 
 	for (let v = 0; v < players.length; v++) {
 		if (players[v] && players[v].paused) {
@@ -118,7 +121,6 @@ const togoodevil = throttle(debounce((n?: number) => {
 	setTimeout(() => {
 		merit.scale = 1;
 	}, 60);
-	merit.list = _m;
 }, 60), 240);
 </script>
 
