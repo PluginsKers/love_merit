@@ -98,9 +98,9 @@ const togoodevil = throttle(debounce((n?: number) => {
 		_m.shift();
 	}
 
-	setTimeout(() => {
-		_m.shift();
-	}, Math.round(Math.random() * 5000) + 5000);
+	// setTimeout(() => {
+	// 	_m.shift();
+	// }, Math.round(Math.random() * 5000) + 5000);
 
 	_m.push(_d);
 
