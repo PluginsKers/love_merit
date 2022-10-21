@@ -99,7 +99,7 @@ const togoodevil = throttle((n?: number) => {
 	setTimeout(() => {
 		merit.scale = 1;
 	}, 60);
-}, 60);
+}, 240);
 </script>
 
 <template>
