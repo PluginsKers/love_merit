@@ -22,6 +22,10 @@
   --gap-p: 0.75rem;
 }
 
+* {
+  user-select: none;
+}
+
 #app {
   overflow: visible;
 }
