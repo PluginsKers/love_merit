@@ -99,7 +99,7 @@ const togoodevil = throttle(debounce((n?: number) => {
 	}
 
 	setTimeout(() => {
-		_m.shift();
+		debounce(merit.list.shift(), 120);
 	}, Math.round(Math.random() * 5000) + 5000);
 
 	_m.push(_d);
