@@ -71,9 +71,9 @@ const togoodevil = throttle((n?: number) => {
 		size: Math.round(Math.random() * 24) + (hited ? 32 : 24) + window.innerWidth * 0.02,
 		left: Math.round(Math.random() * window.innerWidth) - Math.round(Math.random() * window.innerWidth) * (hited ? 0 : 0.3),
 		top: Math.round(Math.random() * window.innerHeight) - Math.round(Math.random() * window.innerHeight) * (hited ? 0 : 0.3),
-		color: hited ? '#fbff08' : 'rgba(0, 0, 0, 1)',
+		color: hited ? 'rgb(251, 255, 8, 0.9)' : 'rgba(' + Math.floor(Math.random() * 255) + ',' + Math.floor(Math.random() * 255) + ',' + Math.floor(Math.random() * 255) + ', 0.3)',
 		weight: hited ? 800 : 300,
-		shadow: hited ? '0 2px 4px rgba(0, 0, 0, 0.6)' : '0 2px 4px rgba(0, 0, 0, 0.6)',
+		shadow: hited ? '0 2px 4px rgb(0, 0, 0, 0.6)' : '0 2px 4px rgba(0, 0, 0, 0.6)',
 		merit: merit.current,
 		perfix: hited ? subs[Math.round(Math.random() * subs.length)] : '功德'
 	}
