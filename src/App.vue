@@ -75,12 +75,9 @@ function hit(probability: number, accuracy = 1000) {
 
 let players = new Array(new Audio('merit.mp3'));
 
-function shift() {
-	merit.list.shift();
-}
-
 const togoodevil = throttle(debounce((n?: number) => {
-	let hited: boolean = hit(3);
+	let hited: boolean = hit(3),
+		_m = merit.list;
 	merit.current = n ? n : (hited ? Math.round(Math.random() * 2) + 2 : 1);
 	merit.scale = hited ? merit.current * 0.5 + 1 : 1.345;
 	merit.data += merit.current;
@@ -88,7 +85,7 @@ const togoodevil = throttle(debounce((n?: number) => {
 		size: Math.round(Math.random() * 24) + (hited ? 32 : 24) + window.innerWidth * 0.02,
 		left: Math.round(Math.random() * window.innerWidth) - Math.round(Math.random() * window.innerWidth) * (hited ? 0 : 0.3),
 		top: Math.round(Math.random() * window.innerHeight) - Math.round(Math.random() * window.innerHeight) * (hited ? 0 : 0.3),
-		color: hited ? 'rgb(251, 255, 8, 0.9)' : 'rgba(' + Math.floor(Math.random() * 255) + ',' + Math.floor(Math.random() * 255) + ',' + Math.floor(Math.random() * 255) + ', 0.3)',
+		color: hited ? 'rgb(251, 255, 8, 0.9)' : 'rgba(' + Math.floor(Math.random() * 255) + ',' + Math.floor(Math.random() * 255) + ',' + Math.floor(Math.random() * 255) + ', 0.4)',
 		weight: hited ? 800 : 300,
 		shadow: hited ? '0 2px 4px rgb(0, 0, 0, 0.6)' : '0 2px 4px rgba(0, 0, 0, 0.6)',
 		merit: merit.current,
@@ -97,13 +94,15 @@ const togoodevil = throttle(debounce((n?: number) => {
 
 	_d.left -= _d.size;
 
-	if (merit.list.length > 26) {
-		shift();
-	} else {
-		setTimeout(shift, Math.round(Math.random() * 5000) + 5000);
+	if (_m.length > 26) {
+		_m.shift();
 	}
 
-	merit.list.push(_d);
+	setTimeout(() => {
+		_m.shift();
+	}, Math.round(Math.random() * 5000) + 5000);
+
+	_m.push(_d);
 
 	for (let v = 0; v < players.length; v++) {
 		if (players[v] && players[v].paused) {
@@ -115,10 +114,11 @@ const togoodevil = throttle(debounce((n?: number) => {
 			break;
 		} else continue;
 	}
-	
+
 	setTimeout(() => {
 		merit.scale = 1;
 	}, 60);
+	merit.list = _m;
 }, 60), 240);
 </script>
 
@@ -144,6 +144,7 @@ const togoodevil = throttle(debounce((n?: number) => {
 				d="M1400 1535 c0 -25 38 -55 69 -55 32 0 81 34 81 56 0 11 -17 14 -75 14 -60 0 -75 -3 -75 -15z m120 -14 c0 -23 -58 -27 -86 -6 -17 13 -15 14 34 15 28 0 52 -4 52 -9z" />
 		</g>
 	</svg>
+	<div class="merits-overlay"></div>
 	<ul class="merits" ref="merits">
 		<li v-for="v,index of merit.list" :key="index" track-by="$index"
 			:style="{top: v.top + 'px', left: v.left + 'px', fontSize: v.size + 'px', color: v.color, textShadow: v.shadow, fontWeight: v.weight}">
@@ -158,6 +159,11 @@ const togoodevil = throttle(debounce((n?: number) => {
 	z-index: 99;
 }
 
+.merits-overlay {
+	backdrop-filter: blur(3px);
+	z-index: 6;
+}
+
 .wooden_fish {
 	position: relative;
 	pointer-events: none;
@@ -166,6 +172,7 @@ const togoodevil = throttle(debounce((n?: number) => {
 }
 
 .touch-overlay,
+.merits-overlay,
 .merits {
 	position: absolute;
 	top: 0;
@@ -193,7 +200,6 @@ const togoodevil = throttle(debounce((n?: number) => {
 	overflow: visible !important;
 	color: var(--text-p1);
 	opacity: 0.8;
-	z-index: 1;
 }
 
 .mymerits {
@@ -203,5 +209,6 @@ const togoodevil = throttle(debounce((n?: number) => {
 	right: 20px;
 	font-weight: 100;
 	font-size: 30px;
+	z-index: 98;
 }
 </style>
