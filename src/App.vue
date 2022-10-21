@@ -9,6 +9,23 @@ let merit = reactive({
 	raw: "",
 });
 
+function debounce(func: Function, time: number, immediate = false) {
+	let timer: number | null = null;
+	return (...args: any) => {
+		if (timer) clearInterval(timer)
+		if (immediate) {
+			if (!timer) func.apply(debounce, args);
+			timer = window.setTimeout(() => {
+				timer = null
+			}, time)
+		} else {
+			timer = window.setTimeout(() => {
+				func.apply(debounce, args)
+			}, time)
+		}
+	}
+}
+
 function throttle(func: Function, time: number, immediate = false) {
 	if (immediate) {
 		let prevTime = 0;
@@ -62,7 +79,7 @@ function shift() {
 	merit.list.shift();
 }
 
-const togoodevil = throttle((n?: number) => {
+const togoodevil = throttle(debounce((n?: number) => {
 	let hited: boolean = hit(3);
 	merit.current = n ? n : (hited ? Math.round(Math.random() * 2) + 2 : 1);
 	merit.scale = hited ? merit.current * 0.5 + 1 : 1.345;
@@ -102,7 +119,7 @@ const togoodevil = throttle((n?: number) => {
 	setTimeout(() => {
 		merit.scale = 1;
 	}, 60);
-}, 240);
+}, 240), 240);
 </script>
 
 <template>
