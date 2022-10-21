@@ -80,11 +80,14 @@ const togoodevil = throttle((n?: number) => {
 
 	_d.left -= _d.size;
 
-	if (merit.list.length > 50) shift();
+	if (merit.list.length > 26) {
+		shift();
+	} else {
+		setTimeout(shift, Math.round(Math.random() * 5000) + 5000);
+	}
 
 	merit.list.push(_d);
 
-	setTimeout(shift, Math.round(Math.random() * 100000) + 5000);
 
 	for (let v = 0; v < players.length; v++) {
 		if (players[v] && players[v].paused) {
@@ -164,19 +167,20 @@ const togoodevil = throttle((n?: number) => {
 }
 
 .merits li {
-	font-family: STXinwei;
+	font-family: SimSun;
 	position: absolute;
 	white-space: nowrap;
 	font-size: 56px;
+	font-weight: 500;
 	line-height: 64px;
-	overflow: visible;
+	overflow: visible !important;
 	color: var(--text-p1);
 	opacity: 0.8;
 	z-index: 1;
 }
 
 .mymerits {
-	font-family: STXinwei;
+	font-family: SimSun;
 	position: fixed;
 	bottom: 0;
 	right: 20px;
