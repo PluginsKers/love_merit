@@ -105,7 +105,6 @@ const togoodevil = throttle(debounce((n?: number) => {
 
 	merit.list.push(_d);
 
-
 	for (let v = 0; v < players.length; v++) {
 		if (players[v] && players[v].paused) {
 			players[v].play();
@@ -116,10 +115,11 @@ const togoodevil = throttle(debounce((n?: number) => {
 			break;
 		} else continue;
 	}
+	
 	setTimeout(() => {
 		merit.scale = 1;
 	}, 60);
-}, 240), 240);
+}, 60), 240);
 </script>
 
 <template>
@@ -145,7 +145,7 @@ const togoodevil = throttle(debounce((n?: number) => {
 		</g>
 	</svg>
 	<ul class="merits" ref="merits">
-		<li v-for="v,index of merit.list"
+		<li v-for="v,index of merit.list" :key="index" track-by="$index"
 			:style="{top: v.top + 'px', left: v.left + 'px', fontSize: v.size + 'px', color: v.color, textShadow: v.shadow, fontWeight: v.weight}">
 			{{ v.perfix }}+{{v.merit}}
 		</li>
