@@ -76,7 +76,7 @@ function hit(probability: number, accuracy = 1000) {
 let players = new Array(new Audio('merit.mp3'));
 
 function shift() {
-	debounce(merit.list.shift(), 120);
+	throttle(merit.list.shift(), 120);
 }
 
 const togoodevil = throttle(debounce((n?: number) => {
@@ -96,10 +96,6 @@ const togoodevil = throttle(debounce((n?: number) => {
 	}
 
 	_d.left -= _d.size;
-
-	if (merit.list.length > 26) {
-		shift();
-	}
 
 	setTimeout(() => {
 		shift();
